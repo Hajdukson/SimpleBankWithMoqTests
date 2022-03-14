@@ -11,6 +11,6 @@
         EUR,
         USD,
         GBP,
-        PLN
+        HUF
     }
 }

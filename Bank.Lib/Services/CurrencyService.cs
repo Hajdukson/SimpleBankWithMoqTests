@@ -12,6 +12,5 @@
         {
             return _fetchCurrencyData.Fetch().Result;
         }
-        
     }
 }

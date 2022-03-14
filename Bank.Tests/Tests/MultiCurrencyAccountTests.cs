@@ -122,6 +122,42 @@ namespace Bank.Tests
 
             Assert.AreEqual(113.50995m, Math.Round(balanceAfterCurrencyChanged, 5));
         }
+        [Test]
+        public void BidValuEquelsZeroTest()
+        {
+            var currencyServiceMock = new Mock<ICurrencyService>();
+
+            currencyServiceMock
+                .Setup(data => data.GetCurrentCurrenciesRate())
+                .Returns(new List<Currency>()
+                {
+                    new Currency() 
+                    { 
+                        Code = CurrencyCode.USD, 
+                        BID = 0, 
+                        EffectiveDate = new DateTime(2022, 03, 14)
+                    }
+                });
+
+            _account = new MultiCurrencyAccount(currencyServiceMock.Object);
+            _account.CurrentBalance = 100;
+            
+
+            Assert.Throws<DivideByZeroException>(() =>
+            {
+                CurrencyCode code = CurrencyCode.USD;
+                ChangeCurrency(code);
+            });
+        }
+
+        [Test]
+        public void CurrencyNotFoundTest()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                ChangeCurrency(CurrencyCode.HUF);
+            });
+        }
         // helper functions
         private void ChangeCurrency(CurrencyCode code)
         {
@@ -132,14 +168,24 @@ namespace Bank.Tests
             catch (ArgumentOutOfRangeException ex)
             {
                 Debug.WriteLine(ex.StackTrace);
-                throw new ArgumentOutOfRangeException(ex.Message);
+                throw new ArgumentOutOfRangeException(ex.StackTrace);
+            }
+            catch (DivideByZeroException ex)
+            {
+                Debug.WriteLine(ex.StackTrace);
+                throw new DivideByZeroException(ex.StackTrace);
+            }
+            catch(ArgumentNullException ex)
+            {
+                Debug.WriteLine(ex.StackTrace);
+                throw new ArgumentNullException(ex.StackTrace);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.StackTrace);
-                throw new Exception();
+                throw new Exception(ex.StackTrace);
             }
-            
+
         }
         private void Debit(decimal amount)
         {
@@ -147,12 +193,17 @@ namespace Bank.Tests
             {
                 _account.Debit(amount);
             }
-            catch(ArgumentOutOfRangeException ex)
+            catch (ArgumentOutOfRangeException ex)
             {
                 Debug.WriteLine(ex.StackTrace);
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(ex.StackTrace);
             }
-            
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.StackTrace);
+                throw new Exception(ex.StackTrace);
+            }
+
         }
     }
 }

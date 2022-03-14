@@ -10,14 +10,14 @@
         public Currency Currency { get; set; }
         public void ChangeCurrency(CurrencyCode code)
         {
-            var currencySelected = _currencyService
+            var selectedCurrency = _currencyService
                 .GetCurrentCurrenciesRate()
                 .FirstOrDefault(c => c.Code == code);
 
-            if (currencySelected != null)
+            if (selectedCurrency != null)
             {
-                CalculateExchange(currencySelected);
-                Currency = currencySelected;
+                CalculateExchange(selectedCurrency);
+                Currency = selectedCurrency;
             }
             else
             {
@@ -28,7 +28,7 @@
         {
             var currencyBID = currency.BID;
 
-            if(currencyBID == null)
+            if(currencyBID == 0)
             {
                 throw new DivideByZeroException();
             }
