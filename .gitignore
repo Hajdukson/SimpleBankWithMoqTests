@@ -1,0 +1,9 @@
+/.vs
+
+/Bank.Lib/bin
+/Bank.Lib/obj
+
+/Bank.Tests/bin
+/Bank.Tests/obj
+
+/UITest
