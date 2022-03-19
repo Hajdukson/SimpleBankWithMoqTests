@@ -28,7 +28,7 @@
         {
             var currencyBID = currency.BID;
 
-            if(currencyBID == 0)
+            if (currencyBID == 0)
             {
                 throw new DivideByZeroException();
             }

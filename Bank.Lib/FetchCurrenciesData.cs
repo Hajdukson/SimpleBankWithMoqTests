@@ -15,16 +15,17 @@ namespace Bank.Lib
                 {
                     try
                     {
-                        var currencyJSON = await httpClient.GetStringAsync($"https://api.nbp.pl/api/exchangerates/rates/C/code/?format=json");
+                        var currencyJSON = await httpClient.GetStringAsync($"https://api.nbp.pl/api/exchangerates/rates/C/{code}/?format=json");
                         var currencyHelper = JsonSerializer.Deserialize<CurrencyHelper>(currencyJSON);
                         currency.Code = (CurrencyCode)Enum.Parse(typeof(CurrencyCode), currencyHelper.code);
                         currency.BID = currencyHelper.rates[0].bid;
                         currency.EffectiveDate = currencyHelper.rates[0].effectiveDate;
                         currencies.Add(currency);
+                        currency = new Currency();
                     }
                     catch (HttpRequestException ex)
                     {
-                        throw new HttpRequestException(ex.Message);
+                        throw new HttpRequestException(ex.StackTrace);
                     }
                 }
 
